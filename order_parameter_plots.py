@@ -1,4 +1,8 @@
+#!/usr/bin/env python
+
 from itertools import combinations_with_replacement
+import json
+from logging.config import valid_ident
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -8,14 +12,6 @@ from cowley_sro_parameters import sro_modifier
 from matplotlib.gridspec import GridSpec
 from scoreBasedDenoising import ScoreBasedDenoising
 
-from constants import (
-    SYSTEMS,
-    NUM_FRAMES,
-    TYPE_MAPS,
-    NEAREST_NEIGHBORS,
-    SystemColors,
-    SystemLineStyles,
-)
 from modifiers import nearest_neighbor_topology_modifier
 
 
@@ -45,28 +41,35 @@ def plot_window(ax, i, j, timestep, bottom: int, t: tuple, params, color, linest
 
 def main():
     mpl.use("Agg")
-    num_systems = len(SYSTEMS)
+    with open("config.json", "r") as file:
+        config = json.load(file)
 
-    max_num_types = max([len(map_) for map_ in TYPE_MAPS.values()])
+    # need to convert type map keys to integers for SRO modifier to work correctly
+    type_maps = config["Type Maps"]
+    for system in config["Systems"]:
+        type_maps[system] = {int(key): config["Atom Abbreviations"][val] for key, val in type_maps[system].items()}
 
-    frames = np.arange(NUM_FRAMES)
-    timestep = np.zeros(NUM_FRAMES, dtype=int)
-    sro_params = np.zeros((num_systems, NUM_FRAMES, max_num_types, max_num_types))
-    frobenius_norms = np.zeros((NUM_FRAMES, 2))
+    num_systems = len(config["Systems"])
 
-    for system_index, system in enumerate(SYSTEMS):
+    max_num_types = max([len(map_) for map_ in config["Type Maps"].values()])
+
+    frames = np.arange(config["Number of Frames"])
+    timestep = np.zeros(config["Number of Frames"], dtype=int)
+    sro_params = np.zeros(
+        (num_systems, config["Number of Frames"], max_num_types, max_num_types)
+    )
+    frobenius_norms = np.zeros((config["Number of Frames"], 2))
+
+    for system_index, system in enumerate(config["Systems"]):
         pipeline = ovito.io.import_file(f"mc_data/{system}/mc.dump")
-        if system == "cantor":
-            structure = "FCC"
-        if system == "FeAl":
-            structure = "BCC"
+        structure = config["Structure"][system]
         pipeline.modifiers.append(ScoreBasedDenoising(structure=structure))
         bonds_modifier = nearest_neighbor_topology_modifier(
-            NEAREST_NEIGHBORS[structure]
+            config["Number of Nearest Neighbors"][structure]
         )
         pipeline.modifiers.append(bonds_modifier)
 
-        type_map = TYPE_MAPS[system]
+        type_map = type_maps[system]
         inverse_type_map = {val: key for key, val in type_map.items()}
         pairs = list(combinations_with_replacement(type_map.values(), 2))
 
@@ -102,7 +105,7 @@ def main():
 
     for i in range(max_num_types):
         for j in range(i + 1):
-            t = TYPE_MAPS["cantor"][i + 1], TYPE_MAPS["cantor"][j + 1]
+            t = type_maps["cantor"][i + 1], type_maps["cantor"][j + 1]
             ax = plt.subplot(gs[i, j])
             plot_window(
                 ax,
@@ -112,13 +115,13 @@ def main():
                 max_num_types - 1,
                 t,
                 sro_params[0, :, j, i],
-                color=SystemColors.CANTOR,
-                linestyle=SystemLineStyles.CANTOR,
+                color=config["System Colors"]["cantor"],
+                linestyle=config["System Line Styles"]["cantor"],
             )
 
     for i in range(2):
         for j in range(i + 1):
-            t = TYPE_MAPS["FeAl"][i + 1], TYPE_MAPS["FeAl"][j + 1]
+            t = type_maps["FeAl"][i + 1], type_maps["FeAl"][j + 1]
             ax = plt.subplot(gs[i + 6, j])
             plot_window(
                 ax,
@@ -128,8 +131,8 @@ def main():
                 1,
                 t,
                 sro_params[1, :, j, i],
-                color=SystemColors.FEAL,
-                linestyle=SystemLineStyles.FEAL,
+                color=config["System Colors"]["FeAl"],
+                linestyle=config["System Line Styles"]["FeAl"],
             )
 
     fig.text(0.5, 0.05, "MC-MD time (fs)", ha="center", va="bottom")
@@ -142,23 +145,6 @@ def main():
         rotation="vertical",
     )
     fig.savefig("plots/sro_params.svg", bbox_inches="tight")
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    for system_index, system in enumerate(SYSTEMS):
-        plot_kwargs = {
-            "color": getattr(SystemColors(), system.upper()),
-            "linestyle": getattr(SystemLineStyles(), system.upper()),
-            "label": system,
-        }
-        ax.plot(timestep, frobenius_norms[:, system_index], **plot_kwargs)
-
-    ax.legend()
-    ax.grid()
-    ax.set_xscale("log")
-    ax.set_xlabel("MC-MD time (fs)")
-    ax.set_ylabel("normalized Frobenius norm of SRO matrix (Q)")
-    fig.savefig("plots/frobenius.svg")
 
 
 if __name__ == "__main__":

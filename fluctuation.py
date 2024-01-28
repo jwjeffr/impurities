@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+
+import json
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-
-from constants import SYSTEMS, SystemColors, SystemLineStyles
 
 
 def temp_beta_conversion(x: float) -> float:
@@ -14,9 +16,12 @@ def temp_beta_conversion(x: float) -> float:
 def main():
     mpl.use("Agg")
 
+    with open("config.json", "r") as file:
+        config = json.load(file)
+
     beta_vals = np.linspace(10.0, 30.0, 10_000)
 
-    for system in SYSTEMS:
+    for system in config["Systems"]:
         chemical_potentials = np.loadtxt(f"chemical_potentials_{system}.txt")
 
         fugacities = np.exp(np.outer(beta_vals, chemical_potentials))
@@ -24,8 +29,8 @@ def main():
         sum_squared = np.sum(fugacities**2, axis=1)
 
         plot_kwargs = {
-            "color": getattr(SystemColors(), system.upper()),
-            "linestyle": getattr(SystemLineStyles(), system.upper()),
+            "color": config["System Colors"][system],
+            "linestyle": config["System Line Styles"][system],
             "label": system,
         }
 

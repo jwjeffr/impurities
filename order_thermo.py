@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+import json
+
 import ovito
 import numpy as np
 import matplotlib as mpl
@@ -6,7 +10,6 @@ from cowley_sro_parameters import sro_modifier
 from scoreBasedDenoising import ScoreBasedDenoising
 
 from modifiers import nearest_neighbor_topology_modifier
-from constants import SYSTEMS, NUM_FRAMES, NEAREST_NEIGHBORS, TYPE_MAPS
 from site_statistics import get_vacancy_characteristics
 
 
@@ -18,13 +21,14 @@ def temp_beta_conversion(x: float) -> float:
 
 def main():
     mpl.use("Agg")
+    with open("config.json", "r") as file:
+        config = json.load(file)
 
     temperatures = np.arange(200, 1000 + 200, step=200)
-    beta_vals = temp_beta_conversion(temperatures)
 
-    multipanel_fig, axs = plt.subplots(nrows=3, ncols=len(SYSTEMS), sharex="col")
-    singlepanel_fig = plt.figure()
-    singlepanel_ax = singlepanel_fig.add_subplot(111)
+    multipanel_fig, axs = plt.subplots(
+        nrows=3, ncols=len(config["Systems"]), sharex="col"
+    )
 
     color_map = mpl.colormaps["inferno"]
     normalized_temperatures = (temperatures - min(temperatures)) / (
@@ -32,46 +36,44 @@ def main():
     )
     color_map = color_map(normalized_temperatures)
 
-    for system_index, system in enumerate(SYSTEMS):
-        type_map = TYPE_MAPS[system]
+    for system_index, system in enumerate(config["Systems"]):
+        type_map = config["Type Maps"][system]
+
+        type_map = {
+            int(key): config["Atom Abbreviations"][val] for key, val in type_map.items()
+        }
 
         num_types = len(type_map)
         types = np.arange(num_types)
         concentrations = np.ones_like(types) / num_types
 
-        order_parameters = np.zeros(NUM_FRAMES)
-        timesteps = np.zeros(NUM_FRAMES, dtype=int)
+        order_parameters = np.zeros(config["Number of Frames"])
+        timesteps = np.zeros(config["Number of Frames"], dtype=int)
 
         mc_file_name = f"mc_data/{system}/mc.dump"
         pipeline = ovito.io.import_file(mc_file_name)
 
-        structure = None
-        attribute = None
-        if system == "cantor":
-            structure = "FCC"
-            attribute = "sro_CrCr"
-        if system == "FeAl":
-            structure = "BCC"
-            attribute = "sro_FeAl"
+        structure = config["Structure"][system]
+        attribute = f"sro_{config['Dominant Order Parameter'][system]}"
         pipeline.modifiers.append(ScoreBasedDenoising(structure=structure))
 
         bonds_modifier = nearest_neighbor_topology_modifier(
-            NEAREST_NEIGHBORS[structure]
+            config["Number of Nearest Neighbors"][structure]
         )
         pipeline.modifiers.append(bonds_modifier)
 
         modifier = sro_modifier(type_map=type_map)
         pipeline.modifiers.append(modifier)
 
-        for frame in np.arange(NUM_FRAMES):
+        for frame in np.arange(config["Number of Frames"]):
             data = pipeline.compute(frame)
             timesteps[frame] = data.attributes["Timestep"]
             order_parameters[frame] = data.attributes[attribute]
 
         for temperature, color in zip(temperatures, color_map):
-            vacancy_concentrations = np.zeros(NUM_FRAMES)
-            formation_energies = np.zeros(NUM_FRAMES)
-            formation_volumes = np.zeros(NUM_FRAMES)
+            vacancy_concentrations = np.zeros(config["Number of Frames"])
+            formation_energies = np.zeros(config["Number of Frames"])
+            formation_volumes = np.zeros(config["Number of Frames"])
 
             beta = temp_beta_conversion(temperature)
             plot_kwargs = {
@@ -141,6 +143,9 @@ def main():
                 order_parameters, formation_volumes, **plot_kwargs
             )
 
+        axs[-1, system_index].set_xlabel(r"$\chi_{" + attribute + r"}$")
+        axs[0, system_index].set_title(system)
+
     for i, ax_list in enumerate(axs):
         for ax in ax_list:
             if i == 0:
@@ -152,11 +157,6 @@ def main():
     axs[0, -1].legend(
         handles[::-1], labels[::-1], title="temperature (K)", bbox_to_anchor=(1.1, 1.1)
     )
-    axs[-1, 0].set_xlabel(r"Cr-Cr SRO parameter ($\chi_{CrCr}$)")
-    axs[-1, 1].set_xlabel(r"Fe-Al SRO parameter ($\chi_{FeAl}$)")
-
-    axs[0, 0].set_title("Cantor")
-    axs[0, 1].set_title("FeAl")
 
     axs[0, 0].set_ylabel(r"$x_V$ (at. %)")
     axs[1, 0].set_ylabel(r"$E_{form}$ (eV)")

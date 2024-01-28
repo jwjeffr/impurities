@@ -48,6 +48,6 @@ Once these runs are finished, the insertions analysis scripts need to be run:
 - ``histograms.py``
 - ``formation_plots.py``
 - ``order_thermo.py``
-- ``fluctuations.py``
+- ``fluctuation.py``
 
 This will generate text files with chemical potentials, the histograms with distributions of local formation enthalpies and volumes, plots of global formation enthalpies and volumes, plots of vacancy thermodynamics and order, and a plot of occupation fluctuations using the calculated chemical potentials.

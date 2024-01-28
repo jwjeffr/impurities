@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
+import json
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from site_statistics import get_vacancy_characteristics
-
-from constants import SystemColors, SystemLineStyles, TYPE_MAPS, FINAL_STEP, SYSTEMS
 
 
 def temp_beta_conversion(x: float) -> float:
@@ -16,10 +16,14 @@ def temp_beta_conversion(x: float) -> float:
 
 def main():
     mpl.use("Agg")
+
+    with open("config.json", "r") as file:
+        config = json.load(file)
+
     fig, axs = plt.subplots(sharex=True, nrows=3, figsize=(6, 8))
 
-    for system in SYSTEMS:
-        type_dict = TYPE_MAPS[system]
+    for system in config["Systems"]:
+        type_dict = config["Type Maps"][system]
         num_types = len(type_dict)
 
         types = np.arange(num_types, dtype=int)
@@ -28,28 +32,28 @@ def main():
         occupying_energies = np.vstack(
             [
                 np.loadtxt(
-                    f"energetics_data/{system}/occupying{t + 1:.0f}_{FINAL_STEP:.0f}.txt"
+                    f"energetics_data/{system}/occupying{t + 1:.0f}_{config['Final Step']:.0f}.txt"
                 )
                 for t in types
             ]
         )
         vacant_energies = np.loadtxt(
-            f"energetics_data/{system}/vacant_{FINAL_STEP:.0f}.txt"
+            f"energetics_data/{system}/vacant_{config['Final Step']:.0f}.txt"
         )
         enthalpy_per_atom = np.loadtxt(
-            f"energetics_data/{system}/enthalpy_{FINAL_STEP:.0f}.txt"
+            f"energetics_data/{system}/enthalpy_{config['Final Step']:.0f}.txt"
         )
 
         occupying_volumes = np.vstack(
             [
                 np.loadtxt(
-                    f"volumetrics_data/{system}/occupying{t + 1:.0f}_{FINAL_STEP:.0f}.txt"
+                    f"volumetrics_data/{system}/occupying{t + 1:.0f}_{config['Final Step']:.0f}.txt"
                 )
                 for t in types
             ]
         )
         vacant_volumes = np.loadtxt(
-            f"volumetrics_data/{system}/vacant_{FINAL_STEP:.0f}.txt"
+            f"volumetrics_data/{system}/vacant_{config['Final Step']:.0f}.txt"
         )
 
         beta_vals = np.linspace(10.0, 30.0, 10_000)
@@ -69,8 +73,8 @@ def main():
         )
 
         plot_kwargs = {
-            "color": getattr(SystemColors(), system.upper()),
-            "linestyle": getattr(SystemLineStyles(), system.upper()),
+            "color": config["System Colors"][system],
+            "linestyle": config["System Line Styles"][system],
             "label": system,
         }
 

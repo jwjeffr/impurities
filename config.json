@@ -1,0 +1,70 @@
+{
+    "Systems": ["cantor", "FeAl"],
+    "Number of Frames": 50,
+    "Final Step": 1000000,
+    "Number of Nearest Neighbors": {
+        "FCC": 12,
+        "BCC": 8
+    },
+    "Structure": {
+        "cantor": "FCC",
+        "FeAl": "BCC"
+    },
+    "Dominant Order Parameter": {
+        "cantor": "CrCr",
+        "FeAl": "FeAl"
+    },
+    "Atoms": {
+        "cantor": ["Cobalt", "Nickel", "Chromium", "Iron", "Manganese", "Aluminum"],
+        "FeAl": ["Iron", "Aluminum"]
+    },
+    "Atom Colors": {
+        "Cobalt": [1.0, 0.4, 0.4],
+        "Nickel": [0.4, 0.4, 1.0],
+        "Chromium": [1.0, 1.0, 0.0],
+        "Iron": [1.0, 0.4, 1.0],
+        "Manganese": [0.4, 1.0, 0.2],
+        "Aluminum": [0.0, 1.0, 1.0]
+    },
+    "Atom Radii": {
+        "Cobalt": 1.25,
+        "Nickel": 1.25,
+        "Chromium": 1.29,
+        "Iron": 1.26,
+        "Manganese": 1.39,
+        "Aluminum": 1.43
+    },
+    "Atom Abbreviations": {
+        "Cobalt": "Co",
+        "Nickel": "Ni",
+        "Chromium": "Cr",
+        "Iron": "Fe",
+        "Manganese": "Mn",
+        "Aluminum": "Al"
+    },
+    "System Colors": {
+        "cantor": "lightcoral",
+        "FeAl": "dodgerblue"
+    },
+    "System Line Styles": {
+        "cantor": "-",
+        "FeAl": "--"
+    },
+    "Alignments": {
+        "Top Left": 33,
+        "Bottom Left": 65
+    },
+    "Type Maps": {
+        "cantor": {
+            "1": "Cobalt",
+            "2": "Nickel",
+            "3": "Chromium",
+            "4": "Iron",
+            "5": "Manganese"
+        },
+        "FeAl": {
+            "1": "Iron",
+            "2": "Aluminum"
+        }
+    }
+}

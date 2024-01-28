@@ -4,10 +4,11 @@
 Script for creating MC-MD figure
 """
 
+import json
+
 from functools import partial
 import ovito
 from PIL import Image
-from constants import AtomColors, Alignments, SYSTEMS
 
 
 def type_map_modifier(
@@ -32,26 +33,22 @@ def type_map_modifier(
         types.type_by_id_(key).color = color
 
 
-def generate_image(system: str) -> Image:
+def generate_image(system: str, config: dict) -> Image:
     # arguments for saving ovito rendered images
     saving_keyword_arguments = dict(
         size=(1000, 1000), renderer=ovito.vis.TachyonRenderer(), alpha=True
     )
 
-    # type radius map and its associated modifier
-    if system == "cantor":
-        type_info_map = {
-            1: ("Co", 1.25, AtomColors.COBALT),
-            2: ("Ni", 1.25, AtomColors.NICKEL),
-            3: ("Cr", 1.29, AtomColors.CHROMIUM),
-            4: ("Fe", 1.26, AtomColors.IRON),
-            5: ("Mn", 1.39, AtomColors.MANGANESE),
-        }
-    elif system == "FeAl":
-        type_info_map = {
-            1: ("Fe", 1.26, AtomColors.IRON),
-            2: ("Al", 1.43, AtomColors.ALUMINUM),
-        }
+    type_map = config["Type Maps"][system]
+
+    type_info_map = {
+        int(key): (
+            config["Atom Abbreviations"][val],
+            config["Atom Radii"][val],
+            config["Atom Colors"][val],
+        )
+        for key, val in type_map.items()
+    }
     modifier = partial(type_map_modifier, type_info_map=type_info_map)
 
     for state in ["initial", "final"]:
@@ -70,7 +67,7 @@ def generate_image(system: str) -> Image:
         if state == "initial":
             overlay = ovito.vis.ColorLegendOverlay(
                 title=" ",
-                alignment=Alignments.TOP_LEFT,
+                alignment=config["Alignments"]["Top Left"],
                 offset_y=-0.06,
                 offset_x=0.02,
                 font_size=0.1,
@@ -78,7 +75,7 @@ def generate_image(system: str) -> Image:
             )
         elif state == "final" and system == "cantor":
             overlay = ovito.vis.CoordinateTripodOverlay(
-                alignment=Alignments.BOTTOM_LEFT,
+                alignment=config["Alignments"]["Bottom Left"],
                 axis1_label="100",
                 axis1_color=(0, 0, 0),
                 axis2_label="010",
@@ -133,7 +130,10 @@ def generate_image(system: str) -> Image:
 
 
 def main():
-    images = [generate_image(system) for system in SYSTEMS]
+    with open("config.json", "r") as file:
+        config = json.load(file)
+
+    images = [generate_image(system, config) for system in config["Systems"]]
 
     widths, heights = zip(*(i.size for i in images))
 
