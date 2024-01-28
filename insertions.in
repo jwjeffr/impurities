@@ -1,0 +1,92 @@
+# some default settings
+
+echo log
+units metal
+newton on
+boundary p p p
+atom_style atomic
+neighbor 1.0 bin
+neigh_modify every 1 delay 5 check yes
+thermo 500
+
+# get number of type labels
+
+shell ./get_num_types.py inputs/${tag}/masses.in > atom_types_count${t}_${tag}
+variable ntypes file atom_types_count${t}_${tag}
+shell rm atom_types_count${t}_${tag}
+
+# read in configuration from MC-MD, minimize at 0 pressure, rewrite minimized to new file
+
+read_restart mc_data/${tag}/mc.${t}.restart
+reset_timestep 0
+velocity all scale 0.0
+include inputs/${tag}/potential.in
+min_style cg
+min_modify dmax 1.0e-3 line quadratic
+fix press_rel all box/relax iso 0.0 vmax 0.001
+minimize 0.0 1.0e-8 10000 1000000
+set group all image 0 0 0
+write_data mc_data/${tag}/mc_relaxed_${t}.dat
+
+# calculate the enthalpy per atom, print it to a file so we can read it into a post-processing script
+
+thermo_style custom step temp etotal press vol enthalpy
+variable enthalpy equal "enthalpy/atoms"
+variable energy equal "pe"
+variable volume equal "vol"
+reset_timestep 0
+run 0
+
+print "# enthalpy per atom" file energetics_data/${tag}/enthalpy_${t}.txt
+print "${enthalpy}" append energetics_data/${tag}/enthalpy_${t}.txt
+
+# initialize files for vacant energies and each occupying energy
+# printing also clears file
+
+print "# vacant energies" file energetics_data/${tag}/vacant_${t}.txt
+print "# vacant volumes" file volumetrics_data/${tag}/vacant_${t}.txt
+
+variable print_index loop ${ntypes}
+label print_loop
+
+print "# type ${print_index} occupying energies" file energetics_data/${tag}/occupying${print_index}_${t}.txt
+print "# type ${print_index} occupying volumes" file volumetrics_data/${tag}/occupying${print_index}_${t}.txt
+
+next print_index
+jump SELF print_loop
+
+# loop through all sites
+
+variable num_atoms equal "count(all)"
+
+variable site loop ${num_atoms}
+label insertions_loop
+
+delete_atoms group all
+read_data mc_data/${tag}/mc_relaxed_${t}.dat add merge
+
+# loop through all atom types
+
+variable type_label loop ${ntypes}
+label type_loop
+
+# insert type at site, print occupying energy to file
+reset_timestep 0
+set atom ${site} type ${type_label}
+minimize 0.0 1.0e-8 10000 1000000
+print "${energy}" append energetics_data/${tag}/occupying${type_label}_${t}.txt
+print "${volume}" append volumetrics_data/${tag}/occupying${type_label}_${t}.txt
+
+next type_label
+jump SELF type_loop
+
+# get vacant energy, print vacant energy to file
+reset_timestep 0
+group vacancy id ${site}
+delete_atoms group vacancy
+minimize 0.0 1.0e-8 10000 1000000
+print "${energy}" append energetics_data/${tag}/vacant_${t}.txt
+print "${volume}" append volumetrics_data/${tag}/vacant_${t}.txt
+
+next site
+jump SELF insertions_loop
