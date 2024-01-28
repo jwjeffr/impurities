@@ -37,7 +37,7 @@ Then, LAMMPS must be invoked again to perform the vacancy insertions. This is pe
 
 .. code-block:: bash
 
-    for t in $(cat times.txt);
+    for t in $(cat time.txt);
         do lmp -in insertions.in -var tag ${tag} -var t ${t} -log logs/${tag}/insertions${t}.log;
     done
 
