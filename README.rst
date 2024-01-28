@@ -51,3 +51,5 @@ Once these runs are finished, the insertions analysis scripts need to be run:
 - ``fluctuation.py``
 
 This will generate text files with chemical potentials, the histograms with distributions of local formation enthalpies and volumes, plots of global formation enthalpies and volumes, plots of vacancy thermodynamics and order, and a plot of occupation fluctuations using the calculated chemical potentials.
+
+For your own usage, modify ``config.json`` accordingly. Run ``python validate_config.py config.json`` to validate any created config file.
