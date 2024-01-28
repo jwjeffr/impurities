@@ -1,0 +1,2 @@
+pair_style meam
+pair_coeff * * library_cantor.meam Co Ni Cr Fe Mn CoNiCrFeMn.meam Co Ni Cr Fe Mn

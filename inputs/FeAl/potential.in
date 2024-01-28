@@ -1,0 +1,2 @@
+pair_style meam
+pair_coeff * * library_FeAl.meam Fe Al FeAl.meam Fe Al

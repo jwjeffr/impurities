@@ -1,0 +1,2 @@
+lattice fcc 3.0 orient x 1 0 0 orient y 0 1 0 orient z 0 0 1
+region box block 0 7 0 7 0 7

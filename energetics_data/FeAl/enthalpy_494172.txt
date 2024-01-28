@@ -1,0 +1,2 @@
+# enthalpy per atom
+-4.04939318124357

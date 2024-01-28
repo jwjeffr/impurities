@@ -1,0 +1,5 @@
+set type 1 type/ratio 2 0.20 123456
+set type 1 type/ratio 3 0.25 789012
+set type 1 type/ratio 4 0.333333333333 345678
+set type 1 type/ratio 5 0.50 912345
+set type 1 type/subset 4 1 678912
