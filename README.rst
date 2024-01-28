@@ -35,9 +35,11 @@ This will generate a file ``time.txt`` which contains all recorded timesteps, sa
 
 Then, LAMMPS must be invoked again to perform the vacancy insertions. This is performed by the input file ``insertions.in``. To run them for all timesteps, loop through all integers in ``time.txt``:
 
-``for t in $(cat times.txt);
-    do lmp -in insertions.in -var tag ${tag} -var t ${t} -log logs/${tag}/insertions${t}.log;
-done``
+.. code-block: bash
+
+    for t in $(cat times.txt);
+        do lmp -in insertions.in -var tag ${tag} -var t ${t} -log logs/${tag}/insertions${t}.log;
+    done
 
 These runs are quite slow, especially for a pair-style without a GPU/Kokkos accelerator variant. For calculations on an HPC system, consider writing a short script to perform parallel job submissions for each timestep.
 
