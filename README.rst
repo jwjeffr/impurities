@@ -1,12 +1,12 @@
 .. _paper: https://google.com
 
-Vacancy Concentration in FeNiCrMnCo
+Vacancy Concentration in FeNiCrMnCo and FeAl
 -----------------------------------
 
 About
 #####
 
-This repository holds all of the code and LAMMPS inputs to compute vacancy concentration, formation energy, and formation volume in equiatomic FeNiCrMnCo as outlined in `paper`_.
+This repository holds all of the code and LAMMPS inputs to compute vacancy concentration, formation energy, and formation volume in equiatomic FeNiCrMnCo and FeAl as outlined in `paper`_.
 
 Tutorial
 ########
@@ -28,4 +28,24 @@ Any reference to other files in these ``*.in`` files must take into account that
 
 First, to run the MC-NPT equilibration, run the command ``lmp -in mc.in -var tag ${tag}``, where ``tag`` is defined as above. Then, the MC-NPT analysis scripts need to be run:
 
-- ``
+- ``mc_md_visualization.py``
+- ``order_parameter_plots.py``
+
+This will generate a file ``time.txt`` which contains all recorded timesteps, sampled at a logarithmic frequency, as well as the MC-NPT visualization and order parameter plots.
+
+Then, LAMMPS must be invoked again to perform the vacancy insertions. This is performed by the input file ``insertions.in``. To run them for all timesteps, loop through all integers in ``time.txt``:
+
+``for t in $(cat times.txt);
+    do lmp -in insertions.in -var tag ${tag} -var t ${t} -log logs/${tag}/insertions${t}.log;
+done``
+
+These runs are quite slow, especially for a pair-style without a GPU/Kokkos accelerator variant. For calculations on an HPC system, consider writing a short script to perform parallel job submissions for each timestep.
+
+Once these runs are finished, the insertions analysis scripts need to be run:
+
+- ``histograms.py``
+- ``formation_plots.py``
+- ``order_thermo.py``
+- ``fluctuations.py``
+
+This will generate text files with chemical potentials, the histograms with distributions of local formation enthalpies and volumes, plots of global formation enthalpies and volumes, plots of vacancy thermodynamics and order, and a plot of occupation fluctuations using the calculated chemical potentials.
