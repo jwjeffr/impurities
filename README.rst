@@ -35,7 +35,7 @@ This will generate a file ``time.txt`` which contains all recorded timesteps, sa
 
 Then, LAMMPS must be invoked again to perform the vacancy insertions. This is performed by the input file ``insertions.in``. To run them for all timesteps, loop through all integers in ``time.txt``:
 
-.. code-block: bash
+.. code-block:: bash
 
     for t in $(cat times.txt);
         do lmp -in insertions.in -var tag ${tag} -var t ${t} -log logs/${tag}/insertions${t}.log;
