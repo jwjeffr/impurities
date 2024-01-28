@@ -15,7 +15,7 @@
         "FeAl": "FeAl"
     },
     "Atoms": {
-        "cantor": ["Cobalt", "Nickel", "Chromium", "Iron", "Manganese", "Aluminum"],
+        "cantor": ["Cobalt", "Nickel", "Chromium", "Iron", "Manganese"],
         "FeAl": ["Iron", "Aluminum"]
     },
     "Atom Colors": {
