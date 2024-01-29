@@ -1,5 +1,6 @@
+numpy
+matplotlib
 ovito
 pillow
-matplotlib
 cowley_sro_parameters
 git+https://github.com/ovito-org/ScoreBasedDenoising.git

@@ -2,7 +2,6 @@
 
 from itertools import combinations_with_replacement
 import json
-from logging.config import valid_ident
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
