@@ -20,7 +20,8 @@ def type_map_modifier(
     important for labeling the type legend
     :param frame: frame of pipeline
     :param data: data collection from frame
-    :param type_info_map: dictionary mapping integer labels to (type name, radius, display color) tuples
+    :param type_info_map: dictionary mapping integer labels to
+        (type name, radius, display color) tuples
     :return: None
     """
 

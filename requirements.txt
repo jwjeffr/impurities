@@ -4,3 +4,5 @@ ovito
 pillow
 cowley_sro_parameters
 git+https://github.com/ovito-org/ScoreBasedDenoising.git
+pylint
+pylint-exit

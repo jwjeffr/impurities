@@ -35,7 +35,8 @@ class FormationCalculator:
 
         assert self.energetics_data.shape == self.volumetrics_data.shape
 
-        # vectorize concentration and formation quantity methods, excluding all arguments except beta
+        # vectorize concentration and formation quantity methods
+        # excluding all arguments except beta
         self.concentration_vectorized: callable = np.vectorize(
             self.get_concentration, excluded="self"
         )
@@ -227,8 +228,8 @@ def get_vacancy_characteristics(
     )
     volumetrics_data = get_formation_array(occupying_volumes, vacant_volumes)
 
-    # initialize formation calculator object, calculate concentration, formation energies, and formation volumes
-    # as a function of temperature
+    # initialize formation calculator object, calculate concentration,
+    # formation energies, and formation volumes as a function of temperature
     formation_calculator = FormationCalculator(energetics_data, volumetrics_data)
     vacancy_concentration = formation_calculator.concentration_vectorized(beta_vals)
     formation_energies = formation_calculator.get_formation_energy(beta_vals)

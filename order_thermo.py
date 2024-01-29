@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+script for creating vacancy thermodynamics vs. order plot
+"""
+
 import json
 
 import ovito
@@ -14,14 +18,24 @@ from site_statistics import get_vacancy_characteristics
 
 
 def temp_beta_conversion(x: float) -> float:
+
+    """
+    temperature <-> beta conversion
+    """
+
     boltzmann_constant = 8.615e-5
 
     return 1 / (boltzmann_constant * x)
 
 
 def main():
+
+    """
+    create plot
+    """
+
     mpl.use("Agg")
-    with open("config.json", "r") as file:
+    with open("config.json", "r", encoding="utf8") as file:
         config = json.load(file)
 
     temperatures = np.arange(200, 1000 + 200, step=200)
@@ -51,7 +65,11 @@ def main():
         timesteps = np.zeros(config["Number of Frames"], dtype=int)
 
         mc_file_name = f"mc_data/{system}/mc.dump"
+
+        # pylint: disable=no-member
         pipeline = ovito.io.import_file(mc_file_name)
+
+        # pylint: enable=no-member
 
         structure = config["Structure"][system]
         attribute = f"sro_{config['Dominant Order Parameter'][system]}"
