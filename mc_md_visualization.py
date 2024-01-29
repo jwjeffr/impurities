@@ -11,6 +11,7 @@ import ovito
 from PIL import Image
 
 
+# pylint: disable=no-member, unused-argument
 def type_map_modifier(
     frame: int, data: ovito.data.DataCollection, type_info_map: dict
 ) -> None:
@@ -19,7 +20,7 @@ def type_map_modifier(
     important for labeling the type legend
     :param frame: frame of pipeline
     :param data: data collection from frame
-    :param type_info_map: dictionary mapping integer labels to (atom type name, radius, display color) tuples
+    :param type_info_map: dictionary mapping integer labels to (type name, radius, display color) tuples
     :return: None
     """
 
@@ -34,10 +35,18 @@ def type_map_modifier(
 
 
 def generate_image(system: str, config: dict) -> Image:
+    """
+    generate column of an image for a system
+    """
+
+    # pylint: disable=no-member
+
     # arguments for saving ovito rendered images
-    saving_keyword_arguments = dict(
-        size=(1000, 1000), renderer=ovito.vis.TachyonRenderer(), alpha=True
-    )
+    saving_keyword_arguments = {
+        "size": (1000, 1000),
+        "renderer": ovito.vis.TachyonRenderer(),
+        "alpha": True,
+    }
 
     type_map = config["Type Maps"][system]
 
@@ -63,7 +72,7 @@ def generate_image(system: str, config: dict) -> Image:
         )
 
         # create either a type legend or a coordinate tripod depending on the state being rendered
-        # so type legend is at the top of the image and coordinate tripod is on the bottom of the image
+        # type legend is at the top of the image, coordinate tripod is on the bottom of the image
         if state == "initial":
             overlay = ovito.vis.ColorLegendOverlay(
                 title=" ",
@@ -121,7 +130,8 @@ def generate_image(system: str, config: dict) -> Image:
     total_height = sum(heights) - crop
     max_width = max(widths)
 
-    # initialize a new image, paste final state, paste initial state over the empty space above the final state's image
+    # initialize a new image, paste final state
+    # paste initial state over the empty space above the final state's image
     new_im = Image.new("RGBA", (max_width, total_height))
     new_im.paste(final_image, (0, initial_image.size[1] - crop))
     new_im.paste(initial_image, (0, 0))
@@ -130,7 +140,11 @@ def generate_image(system: str, config: dict) -> Image:
 
 
 def main():
-    with open("config.json", "r") as file:
+    """
+    generate columns for each system, combine images
+    """
+
+    with open("config.json", "r", encoding="utf8") as file:
         config = json.load(file)
 
     images = [generate_image(system, config) for system in config["Systems"]]
@@ -141,7 +155,8 @@ def main():
     total_width = sum(widths)
     max_height = max(heights)
 
-    # initialize a new image, paste final state, paste initial state over the empty space above the final state's image
+    # initialize a new image, paste final state
+    # paste initial state over the empty space above the final state's image
     new_im = Image.new("RGBA", (total_width, max_height))
     new_im.paste(images[0], (0, 0))
     new_im.paste(images[1], (images[1].size[0], 0))

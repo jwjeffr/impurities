@@ -1,3 +1,7 @@
+"""
+small library that creates topology from a list of nearest neighbors
+"""
+
 import ovito
 import numpy as np
 
@@ -6,6 +10,8 @@ def nearest_neighbor_topology_modifier(num_nearest_neighbors: int) -> callable:
     """
     Modifier for creating a topology from the N nearest neighbors
     """
+
+    # pylint: disable=no-member, unused-argument
 
     def wrapper(frame: int, data: ovito.data.DataCollection) -> None:
         finder = ovito.data.NearestNeighborFinder(num_nearest_neighbors, data)

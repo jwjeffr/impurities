@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+"""
+script for creating local formation histograms
+"""
+
 import json
 
 import numpy as np
@@ -9,8 +13,12 @@ import site_statistics
 
 
 def main():
+    """
+    create plot
+    """
+
     mpl.use("Agg")
-    with open("config.json", "r") as file:
+    with open("config.json", "r", encoding="utf8") as file:
         config = json.load(file)
     height_ratios = [1, 1, 1, 1, 1, 0.4, 1, 1]
     fig, axs = plt.subplots(
@@ -72,7 +80,7 @@ def main():
             occupying_volumes, vacant_volumes
         )
 
-        plot_keyword_args = dict(zorder=6, linewidth=1, edgecolor="black")
+        plot_keyword_args = {"zorder": 6, "linewidth": 1, "edgecolor": "black"}
 
         colors = [config["Atom Colors"][key] for key in config["Atoms"][system]]
 

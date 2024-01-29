@@ -1,31 +1,44 @@
 #!/usr/bin/python
 
+"""
+script for validating a config file
+"""
+
 import json
 import sys
 
 
 def main():
+    """
+    validate config file from cmd args
+    """
 
     config_file_name = sys.argv[1]
 
-    with open(config_file_name, 'r') as file:
+    with open(config_file_name, "r", encoding="utf8") as file:
         config = json.load(file)
-    
-    # first, validate that subdictionaries with systems as dictionaries only have keys from system
 
-    for key in ["Structure", "Dominant Order Parameter", "Atoms", "System Colors", "System Line Styles", "Type Maps"]:
+    # first, validate that subdictionaries with systems as dictionaries only have keys from systes
+
+    for key in [
+        "Structure",
+        "Dominant Order Parameter",
+        "Atoms",
+        "System Colors",
+        "System Line Styles",
+        "Type Maps",
+    ]:
         assert list(config[key].keys()) == config["Systems"]
 
     # then, make sure that atom lists are consistent for each system
 
     for system in config["Systems"]:
-
         assert config["Atoms"][system] == list(config["Type Maps"][system].values())
-    
+
     # then, check that all atom types have a defined color
 
     all_types = [config["Atoms"][system] for system in config["Systems"]]
-    
+
     # flatten list
     all_types = [item for sublist in all_types for item in sublist]
     all_types = list(set(all_types))
@@ -34,10 +47,14 @@ def main():
         _ = config["Atom Colors"][type_]
 
     # lastly, check that all atom properties have the same keys
-    assert config["Atom Colors"].keys() == config["Atom Radii"].keys() == config["Atom Abbreviations"].keys()
+    assert (
+        config["Atom Colors"].keys()
+        == config["Atom Radii"].keys()
+        == config["Atom Abbreviations"].keys()
+    )
 
-    print(f'{config_file_name} is a valid config')
+    print(f"{config_file_name} is a valid config")
 
-if __name__ == '__main__':
 
+if __name__ == "__main__":
     main()

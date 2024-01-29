@@ -1,6 +1,6 @@
 """
-Module for performing site statistics calculations, including chemical potential, vacancy concentration, vacancy
-formation energy, and vacancy formation volume.
+Module for performing site statistics calculations, including chemical potential,
+vacancy concentration, vacancy formation energy, and vacancy formation volume.
 """
 
 
@@ -29,8 +29,8 @@ class FormationCalculator:
 
     def __post_init__(self):
         """
-        checks that data arrays have the same shape, and vectorizes concentration calculation and formation quantity
-        calculation at multiple temperatures
+        checks that data arrays have the same shape, and vectorizes concentration calculation
+        and formation quantity calculation at multiple temperatures
         """
 
         assert self.energetics_data.shape == self.volumetrics_data.shape
@@ -115,7 +115,8 @@ def get_chemical_potentials(
     """
     method for getting chemical potentials using site statistics
     :param types: array of atom types, shape is (number of types,)
-    :param occupying_energies: array of occupying energies, shape is (number of types, number of sites)
+    :param occupying_energies: array of occupying energies
+        shape is (number of types, number of sites)
     :param concentrations: array of concentrations in at. %, shape is (number of types,)
     :param enthalpy_per_atom: enthalpy per atom of equilibrated configuration
     :return: chemical potential of each type, shape is (number of types,)
@@ -168,7 +169,8 @@ def get_formation_array(
     num_types, num_sites = occupying.shape
     formation_array = np.vstack([vacant] * num_types) - occupying
 
-    # if chemical potentials provided, add them to formation array, extra energetic penalty with chemical potentials
+    # if chemical potentials provided, add them to formation array
+    # extra energetic penalty with chemical potentials
     if chemical_potentials is not None:
         assert chemical_potentials.shape == (occupying.shape[0],)
         formation_array += np.vstack([chemical_potentials] * num_sites).T
@@ -191,16 +193,21 @@ def get_vacancy_characteristics(
     Annotated[ArrayLike, NUM_TEMPERATURES],
 ]:
     """
-    helper method for getting vacancy characteristics (concentration and formation quantities) at multiple temperatures
+    helper method for getting vacancy characteristics
+        (concentration and formation quantities) at multiple temperatures
     :param vacant_energies: array of vacant energies, shape is (number of sites,)
-    :param occupying_energies: array of occupying energies, shape is (number of types, number of sites)
+    :param occupying_energies: array of occupying energies
+        shape is (number of types, number of sites)
     :param vacant_volumes: array of vacant volumes, shape is (number of sites,)
-    :param occupying_volumes: array of occupying volumes, shape is (number of types, number of sites)
+    :param occupying_volumes: array of occupying volumes
+        shape is (number of types, number of sites)
     :param types: array of types, shape is (number of types,)
     :param concentrations: array of concentrations in at.%, shape is (number of types,)
     :param enthalpy_per_atom: enthalpy per atom of equilibrated configuration
-    :param beta_vals: array of beta values to evaluate characteristics at, shape is (number of temperatures,)
-    :return: 3-tuple of vacancy characteristics, each member of tuple has shape (number of temperatures,)
+    :param beta_vals: array of beta values to evaluate characteristics at
+        shape is (number of temperatures,)
+    :return: 3-tuple of vacancy characteristics
+        each member of tuple has shape (number of temperatures,)
     """
 
     assert occupying_energies.shape == occupying_volumes.shape

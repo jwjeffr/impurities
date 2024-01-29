@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+"""
+script for creating formation plots at the final MC-MD step
+"""
+
 import json
 
 import numpy as np
@@ -9,15 +13,23 @@ from site_statistics import get_vacancy_characteristics
 
 
 def temp_beta_conversion(x: float) -> float:
+    """
+    temperature <-> beta conversion
+    """
+
     boltzmann_constant = 8.615e-5
 
     return 1 / (boltzmann_constant * x)
 
 
 def main():
+    """
+    create plot
+    """
+
     mpl.use("Agg")
 
-    with open("config.json", "r") as file:
+    with open("config.json", "r", encoding="utf8") as file:
         config = json.load(file)
 
     fig, axs = plt.subplots(sharex=True, nrows=3, figsize=(6, 8))

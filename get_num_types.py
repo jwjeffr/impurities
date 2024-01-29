@@ -1,11 +1,19 @@
 #!/usr/bin/env python
 
+"""
+small script for getting number of atom types from a LAMMPS data file
+"""
+
 import sys
 
 
 def main():
+    """
+    get number of atom types from mass lines
+    """
+
     num_types = 0
-    with open(sys.argv[1], "r") as file:
+    with open(sys.argv[1], "r", encoding="utf8") as file:
         for line in file:
             if "mass" not in line:
                 continue

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+script for creating order-parameter plots
+"""
+
 from itertools import combinations_with_replacement
 import json
 
@@ -15,6 +19,10 @@ from modifiers import nearest_neighbor_topology_modifier
 
 
 def plot_window(ax, i, j, timestep, bottom: int, t: tuple, params, color, linestyle):
+    """
+    plot a window in the gridspec
+    """
+
     ax.set_xlim([10 ** (0.5), 10 ** (6.5)])
     ax.set_ylim([-1.1, 1.1])
     ax.set_xscale("log")
@@ -39,18 +47,25 @@ def plot_window(ax, i, j, timestep, bottom: int, t: tuple, params, color, linest
 
 
 def main():
+    """
+    plot all windows
+    """
+
     mpl.use("Agg")
-    with open("config.json", "r") as file:
+    with open("config.json", "r", encoding="utf8") as file:
         config = json.load(file)
 
     # need to convert type map keys to integers for SRO modifier to work correctly
     type_maps = config["Type Maps"]
     for system in config["Systems"]:
-        type_maps[system] = {int(key): config["Atom Abbreviations"][val] for key, val in type_maps[system].items()}
+        type_maps[system] = {
+            int(key): config["Atom Abbreviations"][val]
+            for key, val in type_maps[system].items()
+        }
 
     num_systems = len(config["Systems"])
 
-    max_num_types = max([len(map_) for map_ in config["Type Maps"].values()])
+    max_num_types = max(len(map_) for map_ in config["Type Maps"].values())
 
     frames = np.arange(config["Number of Frames"])
     timestep = np.zeros(config["Number of Frames"], dtype=int)
@@ -60,7 +75,9 @@ def main():
     frobenius_norms = np.zeros((config["Number of Frames"], 2))
 
     for system_index, system in enumerate(config["Systems"]):
+        # pylint: disable=no-member
         pipeline = ovito.io.import_file(f"mc_data/{system}/mc.dump")
+        # pylint: enable=no-member
         structure = config["Structure"][system]
         pipeline.modifiers.append(ScoreBasedDenoising(structure=structure))
         bonds_modifier = nearest_neighbor_topology_modifier(

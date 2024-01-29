@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+script for creating fluctuation vs. temperature plot
+"""
+
 import json
 
 import numpy as np
@@ -8,15 +12,23 @@ import matplotlib as mpl
 
 
 def temp_beta_conversion(x: float) -> float:
+    """
+    temperature <-> beta conversion
+    """
+
     boltzmann_constant = 8.615e-5
 
     return 1 / (boltzmann_constant * x)
 
 
 def main():
+    """
+    create plot
+    """
+
     mpl.use("Agg")
 
-    with open("config.json", "r") as file:
+    with open("config.json", "r", encoding="utf8") as file:
         config = json.load(file)
 
     beta_vals = np.linspace(10.0, 30.0, 10_000)
