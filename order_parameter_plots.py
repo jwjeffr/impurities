@@ -72,7 +72,6 @@ def main():
     sro_params = np.zeros(
         (num_systems, config["Number of Frames"], max_num_types, max_num_types)
     )
-    frobenius_norms = np.zeros((config["Number of Frames"], 2))
 
     for system_index, system in enumerate(config["Systems"]):
         # pylint: disable=no-member
@@ -89,7 +88,7 @@ def main():
         inverse_type_map = {val: key for key, val in type_map.items()}
         pairs = list(combinations_with_replacement(type_map.values(), 2))
 
-        # create SRO modifier which calculates all SRO's and the Frobenius-normed SRO matrix at each timestep
+        # create SRO modifier which calculates all SRO's at each timestep
         modifier = sro_modifier(type_map=type_map)
         pipeline.modifiers.append(modifier)
 
@@ -101,9 +100,6 @@ def main():
                 sro_params[system_index, frame, i - 1, j - 1] = data.attributes[
                     f"sro_{e1}{e2}"
                 ]
-            frobenius_norms[frame, system_index] = data.attributes[
-                "frobenius_norm_sro"
-            ] / len(type_map)
 
     np.savetxt("time.txt", timestep, fmt="%d")
 

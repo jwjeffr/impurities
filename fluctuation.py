@@ -38,7 +38,7 @@ def main():
 
         fugacities = np.exp(np.outer(beta_vals, chemical_potentials))
         squared_sum = np.sum(fugacities, axis=1) ** 2
-        sum_squared = np.sum(fugacities**2, axis=1)
+        sum_squared = np.sum(fugacities ** 2, axis=1)
 
         plot_kwargs = {
             "color": config["System Colors"][system],
