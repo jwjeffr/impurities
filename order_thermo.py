@@ -18,7 +18,6 @@ from site_statistics import get_vacancy_characteristics
 
 
 def temp_beta_conversion(x: float) -> float:
-
     """
     temperature <-> beta conversion
     """
@@ -29,7 +28,6 @@ def temp_beta_conversion(x: float) -> float:
 
 
 def main():
-
     """
     create plot
     """
@@ -72,7 +70,8 @@ def main():
         # pylint: enable=no-member
 
         structure = config["Structure"][system]
-        attribute = f"sro_{config['Dominant Order Parameter'][system]}"
+        order_param = config["Dominant Order Parameter"][system]
+        attribute = f"sro_{order_param}"
         pipeline.modifiers.append(ScoreBasedDenoising(structure=structure))
 
         bonds_modifier = nearest_neighbor_topology_modifier(
@@ -161,7 +160,7 @@ def main():
                 order_parameters, formation_volumes, **plot_kwargs
             )
 
-        axs[-1, system_index].set_xlabel(r"$\chi_{" + attribute + r"}$")
+        axs[-1, system_index].set_xlabel(r"$\chi_{" + order_param + r"}$")
         axs[0, system_index].set_title(system)
 
     for i, ax_list in enumerate(axs):
