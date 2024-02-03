@@ -20,7 +20,17 @@ jobs:
         #   ...
         # 
         # Required
-        lint-path: .
+        lint-path: |
+            fluctuation.py
+            formation_plots.py
+            get_num_types.py
+            histograms.py
+            mc_md_visualization.py
+            modifiers.py
+            order_parameter_plots.py
+            order_thermo.py
+            site_statistics.py
+            validate_config.py
         
         # Version of the Python interpreter which will install all requirements of your project 
         # and lint the package(s) or python file(s) specified with the `lint-path` argument
