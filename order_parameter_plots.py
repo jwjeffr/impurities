@@ -156,7 +156,7 @@ def main():
         va="center",
         rotation="vertical",
     )
-    fig.savefig("plots/sro_params.svg", bbox_inches="tight")
+    fig.savefig("plots/sro_params.pdf", bbox_inches="tight")
 
 
 if __name__ == "__main__":

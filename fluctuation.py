@@ -67,7 +67,7 @@ def main():
     plt.ylabel(r"occupation number fluctuation ($\Delta n$)")
 
     plt.tight_layout()
-    plt.savefig("plots/fluctuation.svg", bbox_inches="tight")
+    plt.savefig("plots/fluctuation.pdf", bbox_inches="tight")
 
 
 if __name__ == "__main__":

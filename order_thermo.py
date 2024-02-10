@@ -180,7 +180,7 @@ def main():
     axs[2, 0].set_ylabel(r"$\Omega_{form}$ ($\AA^3$)")
 
     multipanel_fig.tight_layout()
-    multipanel_fig.savefig("plots/order_thermo.svg", bbox_inches="tight")
+    multipanel_fig.savefig("plots/order_thermo.pdf", bbox_inches="tight")
 
 
 if __name__ == "__main__":

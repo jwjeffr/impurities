@@ -119,7 +119,7 @@ def main():
 
     fig.text(0.0, 0.5, "counts", ha="left", va="center", rotation="vertical")
     fig.tight_layout(w_pad=2)
-    fig.savefig("plots/distribution.svg")
+    fig.savefig("plots/distribution.pdf")
 
 
 if __name__ == "__main__":

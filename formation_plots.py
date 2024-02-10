@@ -116,7 +116,7 @@ def main():
     secx.set_xlabel("temperature ($10^2$ K)")
 
     fig.tight_layout()
-    fig.savefig("plots/formations.svg", bbox_inches="tight")
+    fig.savefig("plots/formations.pdf", bbox_inches="tight")
 
 
 if __name__ == "__main__":
