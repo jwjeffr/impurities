@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 # Vacancy Concentration in FeNiCrMnCo and FeAl
 
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![pylint]()
+=======
+<<<<<<< HEAD
+# Vacancy Concentration in FeNiCrMnCo and FeAl
+
+[![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+>>>>>>> 07b575fe5df42d70ea7df2fa7882f48195773905
 
 ## About
 
