@@ -1,11 +1,10 @@
 # Vacancy Concentration in FeNiCrMnCo and FeAl
-
-[![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![pylint](https://img.shields.io/badge/Pylint-9.76-yellow?logo=python&logoColor=white)
+[![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![pylint]()](https://github.com/marketplace/actions/pylint-with-dynamic-badge)
 =======
 
 ## About
 
-This repository holds all of the code and LAMMPS inputs to compute vacancy concentration, formation energy, and formation volume in equiatomic FeNiCrMnCo and FeAl as outlined in our [paper on arXiv](https://google.com/) (TODO put link here).
+This repository holds all of the code and LAMMPS inputs to compute vacancy concentration, formation energy, and formation volume in equiatomic FeNiCrMnCo and FeAl as outlined in our [paper on arXiv](https://arxiv.org/abs/2402.07324).
 
 ## Tutorial
 
