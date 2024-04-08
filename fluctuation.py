@@ -43,7 +43,7 @@ def main():
         plot_kwargs = {
             "color": config["System Colors"][system],
             "linestyle": config["System Line Styles"][system],
-            "label": system,
+            "label": config["System Labels"][system],
         }
 
         fluctuations = np.sqrt(1 - sum_squared / squared_sum)
@@ -58,11 +58,13 @@ def main():
     secx = ax.secondary_xaxis(
         "top", functions=(temp_beta_conversion, temp_beta_conversion)
     )
-    secx.set_xticks([temp_beta_conversion(x) for x in ax.get_xticks()])
-    new_labels = [f"{x / 100:.2f}" for x in secx.get_xticks()]
-    secx.set_xticklabels(new_labels)
+    temperature_spacing = config["Temperature Spacing"]
+    min_temperature = temperature_spacing * round(temp_beta_conversion(max(ax.get_xticks())) / temperature_spacing)
+    max_temperature = temperature_spacing * round(temp_beta_conversion(min(ax.get_xticks())) / temperature_spacing)
+    secx.set_xticks(np.arange(min_temperature, max_temperature + temperature_spacing, step=temperature_spacing))
     secx.set_xlabel("temperature ($10^2$ K)")
-
+    new_labels = [f"{x / 100:.0f}" for x in secx.get_xticks()]
+    secx.set_xticklabels(new_labels)
     plt.xlabel(r"inverse temperature ($\beta$) (eV$^{-1}$)")
     plt.ylabel(r"occupation number fluctuation ($\Delta n$)")
 

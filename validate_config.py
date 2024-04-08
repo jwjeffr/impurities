@@ -26,6 +26,7 @@ def main():
         "Atoms",
         "System Colors",
         "System Line Styles",
+        "System Labels",
         "Type Maps",
     ]:
         assert list(config[key].keys()) == config["Systems"]

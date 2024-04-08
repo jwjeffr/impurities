@@ -50,10 +50,15 @@
         "cantor": "-",
         "FeAl": "--"
     },
+    "System Labels": {
+        "cantor": "CoNiCrFeMn",
+        "FeAl": "FeAl"
+    },
     "Alignments": {
         "Top Left": 33,
         "Bottom Left": 65
     },
+    "Temperature Spacing": 100,
     "Type Maps": {
         "cantor": {
             "1": "Cobalt",

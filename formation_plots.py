@@ -87,7 +87,7 @@ def main():
         plot_kwargs = {
             "color": config["System Colors"][system],
             "linestyle": config["System Line Styles"][system],
-            "label": system,
+            "label": config["System Labels"][system],
         }
 
         axs[0].plot(beta_vals, vacancy_concentration, **plot_kwargs)
@@ -110,8 +110,11 @@ def main():
     secx = axs[0].secondary_xaxis(
         "top", functions=(temp_beta_conversion, temp_beta_conversion)
     )
-    secx.set_xticks([temp_beta_conversion(x) for x in axs[0].get_xticks()])
-    new_labels = [f"{x / 100:.2f}" for x in secx.get_xticks()]
+    temperature_spacing = config["Temperature Spacing"]
+    min_temperature = temperature_spacing * round(temp_beta_conversion(max(axs[0].get_xticks())) / temperature_spacing)
+    max_temperature = temperature_spacing * round(temp_beta_conversion(min(axs[0].get_xticks())) / temperature_spacing)
+    secx.set_xticks(np.arange(min_temperature, max_temperature + temperature_spacing, step=temperature_spacing))
+    new_labels = [f"{x / 100:.0f}" for x in secx.get_xticks()]
     secx.set_xticklabels(new_labels)
     secx.set_xlabel("temperature ($10^2$ K)")
 

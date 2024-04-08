@@ -161,7 +161,7 @@ def main():
             )
 
         axs[-1, system_index].set_xlabel(r"$\chi_{" + order_param + r"}$")
-        axs[0, system_index].set_title(system)
+        axs[0, system_index].set_title(config["System Labels"][system])
 
     for i, ax_list in enumerate(axs):
         for ax in ax_list:
