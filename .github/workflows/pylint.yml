@@ -24,7 +24,7 @@ jobs:
         requirements-path: requirements.txt
         readme-path: README.md
         badge-text: Pylint
-        color-bad-score: red
-        color-ok-score: orange
-        color-good-score: yellow
-        color-perfect-score: brightgreen
+        color-bad-score: blue
+        color-ok-score: blue
+        color-good-score: blue
+        color-perfect-score: blue
