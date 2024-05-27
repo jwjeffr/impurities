@@ -38,7 +38,7 @@ def main():
 
         fugacities = np.exp(np.outer(beta_vals, chemical_potentials))
         squared_sum = np.sum(fugacities, axis=1) ** 2
-        sum_squared = np.sum(fugacities**2, axis=1)
+        sum_squared = np.sum(fugacities ** 2, axis=1)
 
         plot_kwargs = {
             "color": config["System Colors"][system],
@@ -59,9 +59,19 @@ def main():
         "top", functions=(temp_beta_conversion, temp_beta_conversion)
     )
     temperature_spacing = config["Temperature Spacing"]
-    min_temperature = temperature_spacing * round(temp_beta_conversion(max(ax.get_xticks())) / temperature_spacing)
-    max_temperature = temperature_spacing * round(temp_beta_conversion(min(ax.get_xticks())) / temperature_spacing)
-    secx.set_xticks(np.arange(min_temperature, max_temperature + temperature_spacing, step=temperature_spacing))
+    min_temperature = temperature_spacing * round(
+        temp_beta_conversion(max(ax.get_xticks())) / temperature_spacing
+    )
+    max_temperature = temperature_spacing * round(
+        temp_beta_conversion(min(ax.get_xticks())) / temperature_spacing
+    )
+    secx.set_xticks(
+        np.arange(
+            min_temperature,
+            max_temperature + temperature_spacing,
+            step=temperature_spacing,
+        )
+    )
     secx.set_xlabel("temperature ($10^2$ K)")
     new_labels = [f"{x / 100:.0f}" for x in secx.get_xticks()]
     secx.set_xticklabels(new_labels)

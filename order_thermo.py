@@ -175,7 +175,7 @@ def main():
         handles[::-1], labels[::-1], title="temperature (K)", bbox_to_anchor=(1.1, 1.1)
     )
 
-    axs[0, 0].set_ylabel(r"$x_V$ (at. %)")
+    axs[0, 0].set_ylabel(r"$x_V$ (at. fraction)")
     axs[1, 0].set_ylabel(r"$E_{form}$ (eV)")
     axs[2, 0].set_ylabel(r"$\Omega_{form}$ ($\AA^3$)")
 
