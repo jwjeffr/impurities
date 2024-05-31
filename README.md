@@ -7,7 +7,7 @@
 
 ## About
 
-This repository holds all of the code and LAMMPS inputs to compute vacancy concentration, formation energy, and formation volume in equiatomic FeNiCrMnCo and FeAl as outlined in our [paper on arXiv](https://arxiv.org/abs/2402.07324).
+This repository holds all of the code and LAMMPS inputs to compute vacancy concentration, formation energy, and formation volume in equiatomic FeNiCrMnCo and FeAl as outlined in our [paper on arXiv](https://arxiv.org/abs/2402.07324). To see a stand-alone repository that's better for computing vacancy concentration and formation energy in an arbitrary alloy, see our other repository [here](https://github.com/MUEXLY/thermal_vacancies).
 
 ## Tutorial
 
